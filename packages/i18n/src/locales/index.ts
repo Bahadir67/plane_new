@@ -5,8 +5,18 @@ export { default as enAccessibility } from "./en/accessibility";
 export { default as enEditor } from "./en/editor";
 export { default as enEmptyState } from "./en/empty-state";
 
+// Export Turkish core translations (default language)
+export { default as trCore } from "./tr-TR/core";
+
 // Export locale data for all supported languages
 export const locales = {
+  "tr-TR": {
+    core: () => import("./tr-TR/core"),
+    translations: () => import("./tr-TR/translations"),
+    accessibility: () => import("./tr-TR/accessibility"),
+    editor: () => import("./tr-TR/editor"),
+    "empty-state": () => import("./tr-TR/empty-state"),
+  },
   en: {
     core: () => import("./en/core"),
     translations: () => import("./en/translations"),
@@ -115,11 +125,5 @@ export const locales = {
     accessibility: () => import("./vi-VN/accessibility"),
     editor: () => import("./vi-VN/editor"),
     "empty-state": () => import("./vi-VN/empty-state"),
-  },
-  "tr-TR": {
-    translations: () => import("./tr-TR/translations"),
-    accessibility: () => import("./tr-TR/accessibility"),
-    editor: () => import("./tr-TR/editor"),
-    "empty-state": () => import("./tr-TR/empty-state"),
   },
 };

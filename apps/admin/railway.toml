@@ -1,0 +1,11 @@
+# Railway Configuration for Plane Admin Service
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile.admin"
+
+[deploy]
+healthcheckPath = "/"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
