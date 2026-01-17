@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 python manage.py wait_for_db
+# Ensure schema is created/updated on first boot (and when new migrations exist).
+python manage.py migrate --noinput
 # Wait for migrations
 python manage.py wait_for_migrations
 
