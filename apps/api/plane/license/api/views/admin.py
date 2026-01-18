@@ -101,16 +101,25 @@ class InstanceAdminSignUpEndpoint(View):
             return HttpResponseRedirect(url)
 
         # check if the instance has already an admin registered
-        if InstanceAdmin.objects.first():
-            exc = AuthenticationException(
-                error_code=AUTHENTICATION_ERROR_CODES["ADMIN_ALREADY_EXIST"],
-                error_message="ADMIN_ALREADY_EXIST",
-            )
-            url = urljoin(
-                base_host(request=request, is_admin=True),
-                "?" + urlencode(exc.get_error_dict()),
-            )
-            return HttpResponseRedirect(url)
+        instance_admin = InstanceAdmin.objects.first()
+        if instance_admin:
+            # Check if the user still exists
+            if instance_admin.user_id and User.objects.filter(id=instance_admin.user_id).exists():
+                exc = AuthenticationException(
+                    error_code=AUTHENTICATION_ERROR_CODES["ADMIN_ALREADY_EXIST"],
+                    error_message="ADMIN_ALREADY_EXIST",
+                )
+                url = urljoin(
+                    base_host(request=request, is_admin=True),
+                    "?" + urlencode(exc.get_error_dict()),
+                )
+                return HttpResponseRedirect(url)
+            else:
+                # Orphaned InstanceAdmin record, delete it to allow re-signup
+                instance_admin.delete()
+                # Reset instance setup flag
+                instance.is_setup_done = False
+                instance.save()
 
         # Get the email and password from all the user
         email = request.POST.get("email", False)
