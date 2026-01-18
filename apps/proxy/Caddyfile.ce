@@ -15,23 +15,23 @@
 	}
 
 	redir /spaces /spaces/ permanent
-	reverse_proxy /spaces/* space:3000
+	reverse_proxy /spaces/* space.railway.internal:3001
 
 	redir /god-mode /god-mode/ permanent
-	reverse_proxy /god-mode/* admin:3000
+	reverse_proxy /god-mode/* admin.railway.internal:3000
 
-	reverse_proxy /live/* live:3000
+	reverse_proxy /live/* live.railway.internal:3000
 
-	reverse_proxy /api/* api:8000
+	reverse_proxy /api/* api.railway.internal:8000
 
-	reverse_proxy /auth/* api:8000
+	reverse_proxy /auth/* api.railway.internal:8000
 
-	reverse_proxy /static/* api:8000
+	reverse_proxy /static/* api.railway.internal:8000
 
-	reverse_proxy /{$BUCKET_NAME}/* bucket:9000
-	reverse_proxy /{$BUCKET_NAME} bucket:9000
+	reverse_proxy /{$BUCKET_NAME}/* bucket.railway.internal:9000
+	reverse_proxy /{$BUCKET_NAME} bucket.railway.internal:9000
 
-	reverse_proxy /* web:3000
+	reverse_proxy /* web.railway.internal:3000
 }
 
 {$SITE_ADDRESS} {
