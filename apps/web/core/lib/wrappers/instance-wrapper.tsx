@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import useSWR from "swr";
+import { GOD_MODE_URL } from "@plane/constants";
 // components
 import { LogoSpinner } from "@/components/common/logo-spinner";
 import { InstanceNotReady, MaintenanceView } from "@/components/instance";
@@ -15,6 +17,7 @@ const InstanceWrapper = observer(function InstanceWrapper(props: TInstanceWrappe
   const { children } = props;
   // store
   const { isLoading, instance, error, fetchInstanceInfo } = useInstance();
+  const [isRedirectingToAdmin, setIsRedirectingToAdmin] = useState(false);
 
   const { isLoading: isInstanceSWRLoading, error: instanceSWRError } = useSWR(
     "INSTANCE_INFORMATION",
@@ -35,8 +38,19 @@ const InstanceWrapper = observer(function InstanceWrapper(props: TInstanceWrappe
   // something went wrong while in the request
   if (error && error?.status === "error") return <>{children}</>;
 
+  useEffect(() => {
+    if (instance?.is_setup_done === false && typeof window !== "undefined") {
+      setIsRedirectingToAdmin(true);
+      const fallback = "/god-mode/";
+      const target = GOD_MODE_URL || fallback;
+      if (!window.location.pathname.startsWith("/god-mode")) {
+        window.location.assign(target);
+      }
+    }
+  }, [instance?.is_setup_done]);
+
   // instance is not ready and setup is not done
-  if (instance?.is_setup_done === false) return <InstanceNotReady />;
+  if (instance?.is_setup_done === false) return isRedirectingToAdmin ? null : <InstanceNotReady />;
 
   return <>{children}</>;
 });
