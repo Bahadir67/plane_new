@@ -1,3 +1,6 @@
 FROM minio/minio:latest
 
-CMD ["sh", "-c", "minio server --address [::]:${MINIO_PRIVATE_PORT:-9000} ${RAILWAY_VOLUME_MOUNT_PATH:-/data}"]
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
