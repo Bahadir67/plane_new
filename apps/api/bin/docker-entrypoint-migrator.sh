@@ -1,5 +1,6 @@
-#!/usr/bin/env sh
+#!/bin/bash
 set -e
 
-python manage.py migrate
-python manage.py collectstatic --noinput
+python manage.py wait_for_db $1
+
+python manage.py migrate $1
