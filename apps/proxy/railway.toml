@@ -1,8 +1,8 @@
-# Railway Configuration for Plane Space
+# Railway Configuration for Plane Proxy (Caddy)
 
 [build]
 builder = "dockerfile"
-dockerfilePath = "Dockerfile.space"
+dockerfilePath = "Dockerfile"
 
 [deploy]
 restartPolicyType = "ON_FAILURE"

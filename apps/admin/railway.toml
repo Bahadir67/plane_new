@@ -1,4 +1,4 @@
-# Railway Configuration for Plane Admin Service
+# Railway Configuration for Plane Admin
 
 [build]
 builder = "dockerfile"

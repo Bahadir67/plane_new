@@ -1,12 +1,11 @@
-# Railway Configuration for Plane API Service
+# Railway Configuration for Plane API
 
 [build]
 builder = "dockerfile"
 dockerfilePath = "Dockerfile.api"
 
 [deploy]
-healthcheckPath = "/"
-healthcheckTimeout = 300
+healthcheckPath = "/api/instances/"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
-startCommand = "./bin/docker-entrypoint-api.sh"
+startCommand = "/bin/sh -c \"python manage.py wait_for_db && python manage.py migrate && python manage.py register_instance ${MACHINE_ID} && python manage.py configure_instance && python manage.py create_bucket && python manage.py clear_cache; gunicorn -w ${GUNICORN_WORKERS} -k uvicorn.workers.UvicornWorker plane.asgi:application --bind [::]:${PORT} --max-requests 1200 --max-requests-jitter 1000 --access-logfile -\""
