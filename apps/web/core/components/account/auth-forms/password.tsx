@@ -58,6 +58,12 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
   const [isRetryPasswordInputFocused, setIsRetryPasswordInputFocused] = useState(false);
   const [isBannerMessage, setBannerMessage] = useState(false);
 
+  const getCsrfToken = async () => {
+    const promise = csrfPromise ?? authService.requestCSRFToken();
+    if (!csrfPromise) setCsrfPromise(promise);
+    return promise;
+  };
+
   const handleShowPassword = (key: keyof typeof showPassword) =>
     setShowPassword((prev) => ({ ...prev, [key]: !prev[key] }));
 
@@ -113,7 +119,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
 
   const handleCSRFToken = async () => {
     if (!formRef || !formRef.current) return;
-    const token = await csrfPromise;
+    const token = await getCsrfToken();
     if (!token?.csrf_token) return;
     const csrfElement = formRef.current.querySelector("input[name=csrfmiddlewaretoken]");
     csrfElement?.setAttribute("value", token?.csrf_token);
