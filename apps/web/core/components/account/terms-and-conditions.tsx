@@ -13,8 +13,8 @@ const LEGAL_LINKS = {
 } as const;
 
 const MESSAGES = {
-  [EAuthModes.SIGN_UP]: "By creating an account",
-  [EAuthModes.SIGN_IN]: "By signing in",
+  [EAuthModes.SIGN_UP]: "Hesap oluşturarak",
+  [EAuthModes.SIGN_IN]: "Giriş yaparak",
 } as const;
 
 // Reusable link component to reduce duplication
@@ -30,9 +30,9 @@ export function TermsAndConditions({ authType = EAuthModes.SIGN_IN }: TermsAndCo
   return (
     <div className="flex items-center justify-center">
       <p className="text-center text-13 text-tertiary whitespace-pre-line">
-        {`${MESSAGES[authType]}, you understand and agree to \n our `}
-        <LegalLink href={LEGAL_LINKS.termsOfService}>Terms of Service</LegalLink> and{" "}
-        <LegalLink href={LEGAL_LINKS.privacyPolicy}>Privacy Policy</LegalLink>.
+        {`${MESSAGES[authType]}, \n `}
+        <LegalLink href={LEGAL_LINKS.termsOfService}>Hizmet Koşulları</LegalLink> ve{" "}
+        <LegalLink href={LEGAL_LINKS.privacyPolicy}>Gizlilik Politikası</LegalLink>'nı kabul etmiş olursunuz.
       </p>
     </div>
   );
