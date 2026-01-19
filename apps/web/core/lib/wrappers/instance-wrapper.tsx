@@ -25,6 +25,17 @@ const InstanceWrapper = observer(function InstanceWrapper(props: TInstanceWrappe
     { revalidateOnFocus: false }
   );
 
+  useEffect(() => {
+    if (instance?.is_setup_done === false && typeof window !== "undefined") {
+      setIsRedirectingToAdmin(true);
+      const fallback = "/god-mode/";
+      const target = GOD_MODE_URL || fallback;
+      if (!window.location.pathname.startsWith("/god-mode")) {
+        window.location.assign(target);
+      }
+    }
+  }, [instance?.is_setup_done]);
+
   // loading state
   if ((isLoading || isInstanceSWRLoading) && !instance)
     return (
@@ -37,17 +48,6 @@ const InstanceWrapper = observer(function InstanceWrapper(props: TInstanceWrappe
 
   // something went wrong while in the request
   if (error && error?.status === "error") return <>{children}</>;
-
-  useEffect(() => {
-    if (instance?.is_setup_done === false && typeof window !== "undefined") {
-      setIsRedirectingToAdmin(true);
-      const fallback = "/god-mode/";
-      const target = GOD_MODE_URL || fallback;
-      if (!window.location.pathname.startsWith("/god-mode")) {
-        window.location.assign(target);
-      }
-    }
-  }, [instance?.is_setup_done]);
 
   // instance is not ready and setup is not done
   if (instance?.is_setup_done === false) return isRedirectingToAdmin ? null : <InstanceNotReady />;
