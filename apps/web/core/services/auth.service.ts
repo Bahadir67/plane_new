@@ -10,6 +10,15 @@ export class AuthService extends APIService {
     super(API_BASE_URL);
   }
 
+  private async getCsrfToken(): Promise<string> {
+    const data = await this.requestCSRFToken();
+    const token = data?.csrf_token;
+    if (!token) {
+      throw new Error("CSRF token not found");
+    }
+    return token;
+  }
+
   async requestCSRFToken(): Promise<ICsrfTokenData> {
     return this.get("/auth/get-csrf-token/")
       .then((response) => response.data)
@@ -18,15 +27,26 @@ export class AuthService extends APIService {
       });
   }
 
-  emailCheck = async (data: IEmailCheckData): Promise<IEmailCheckResponse> =>
-    this.post("/auth/email-check/", data, { headers: {} })
+  emailCheck = async (data: IEmailCheckData): Promise<IEmailCheckResponse> => {
+    const csrfToken = await this.getCsrfToken();
+    return this.post("/auth/email-check/", data, {
+      headers: {
+        "X-CSRFTOKEN": csrfToken,
+      },
+    })
       .then((response) => response?.data)
       .catch((error) => {
         throw error?.response?.data;
       });
+  };
 
   async sendResetPasswordLink(data: { email: string }): Promise<any> {
-    return this.post(`/auth/forgot-password/`, data)
+    const csrfToken = await this.getCsrfToken();
+    return this.post(`/auth/forgot-password/`, data, {
+      headers: {
+        "X-CSRFTOKEN": csrfToken,
+      },
+    })
       .then((response) => response?.data)
       .catch((error) => {
         throw error?.response;
@@ -46,7 +66,12 @@ export class AuthService extends APIService {
   }
 
   async generateUniqueCode(data: { email: string }): Promise<any> {
-    return this.post("/auth/magic-generate/", data, { headers: {} })
+    const csrfToken = await this.getCsrfToken();
+    return this.post("/auth/magic-generate/", data, {
+      headers: {
+        "X-CSRFTOKEN": csrfToken,
+      },
+    })
       .then((response) => response?.data)
       .catch((error) => {
         throw error?.response?.data;
